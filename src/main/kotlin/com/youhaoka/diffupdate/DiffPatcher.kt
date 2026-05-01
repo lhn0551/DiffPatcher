@@ -19,6 +19,7 @@ object DiffPatcher {
     const val MAX_SUPPORTED_THREAD_COUNT: Int = 1
     const val PATCH_OUTPUT_PREPARE_ERROR: Int = -1
     const val PATCH_OUTPUT_REPLACE_ERROR: Int = -2
+    const val PATCH_OUTPUT_PATH_ERROR: Int = -3
 
     /**
      * 使用文件对象执行差分合成。
@@ -57,6 +58,10 @@ object DiffPatcher {
         cacheMemory: Long = DEFAULT_CACHE_MEMORY_BYTES,
         threadCount: Int = MAX_SUPPORTED_THREAD_COUNT
     ): Int {
+        if (oldFile.isSameFileAs(outputFile) || diffFile.isSameFileAs(outputFile)) {
+            return PATCH_OUTPUT_PATH_ERROR
+        }
+
         val outputParent = outputFile.absoluteFile.parentFile
         if (outputParent != null && !outputParent.exists() && !outputParent.mkdirs()) {
             return PATCH_OUTPUT_PREPARE_ERROR
@@ -139,6 +144,14 @@ object DiffPatcher {
             Files.move(source.toPath(), target.toPath(), REPLACE_EXISTING, ATOMIC_MOVE)
         } catch (_: AtomicMoveNotSupportedException) {
             Files.move(source.toPath(), target.toPath(), REPLACE_EXISTING)
+        }
+    }
+
+    private fun File.isSameFileAs(other: File): Boolean {
+        return try {
+            canonicalFile == other.canonicalFile
+        } catch (_: IOException) {
+            absoluteFile == other.absoluteFile
         }
     }
 }

@@ -37,7 +37,7 @@ if (result == 0) {
 }
 ```
 
-`DiffPatcher.patch(...)` 仍保留给需要自行管理临时文件的调用方。默认 cache memory 为 8 MiB；当前 native 编译未启用多线程，`threadCount` 会限制为 1。更新 SDK 代码后，重新打包并替换 Deka 的 `app/libs/diff-update-sdk-release.aar`。
+`DiffPatcher.patch(...)` 仍保留给需要自行管理临时文件的调用方。默认 cache memory 为 8 MiB；当前 native 编译未启用多线程，`threadCount` 会限制为 1。`patchAtomic(...)` 会拒绝输出路径与旧文件或差分包相同的调用，返回 `PATCH_OUTPUT_PATH_ERROR`。更新 SDK 代码后，重新打包并替换 Deka 的 `app/libs/diff-update-sdk-release.aar`。
 
 ## 校验
 
