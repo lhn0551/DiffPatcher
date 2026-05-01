@@ -1,0 +1,2 @@
+-keep class com.github.sisong.HPatch { *; }
+-keep class com.youhaoka.diffupdate.DiffPatcher { *; }
