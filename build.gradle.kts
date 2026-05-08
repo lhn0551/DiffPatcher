@@ -1,6 +1,10 @@
 plugins {
     alias(libs.plugins.android.library)
+    id("maven-publish")
 }
+
+group = "com.github.lhn0551"
+            version = "v1.0.0"
 
 base {
     archivesName.set("diff-update-sdk")
@@ -28,6 +32,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
+
     externalNativeBuild {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
@@ -37,4 +47,18 @@ android {
 
 dependencies {
     testImplementation("junit:junit:4.13.2")
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = "com.github.lhn0551"
+            artifactId = "DiffPatcher"
+version = "v1.0.0"
+
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
+    }
 }
